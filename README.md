@@ -2,10 +2,11 @@
 
 ## 概要
 　Azure Blob ストレージの audio コンテナに音声ファイルを配置すると、それをトリガーとして起動する Azure Functions Java アプリケーション。音声ファイルを Cognitive Speech Service に渡し、 得られた日本語の音声テキストを text コンテナに配置します。
-<img src="/images/workflow.png" title="workflow">
+
+　<img src="/images/workflow.png" title="workflow">
 
 ### 実行環境
-- Azure App Service Windows ベース環境
+- Azure App Service : Windows ベース環境
 - Java 11
 
 ### 開発環境
@@ -21,16 +22,13 @@ https://docs.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-
 Windows 10 上に開発環境を準備する場合、システム環境変数もしくはユーザー環境変数への登録内容
 
 1. Zulu JDK11 のインストール
-
 %JAVA_HOME% = C:\Program Files\Zulu\zulu-11
 %PATH% へ %JAVA_HOME% を追加
 
 2. Apache Maven の インストール
-
 %PATH% へ C:\Program Files\apache-maven-3.6.3\bin を追加
 
 3. ローカルデバッグ用の設定ファイル
-
 ```json:local.settings.json
 {
   "IsEncrypted": false,
