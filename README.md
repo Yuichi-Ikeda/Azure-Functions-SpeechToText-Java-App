@@ -1,13 +1,13 @@
-# Azure-Functions-SpeechToText-Java-App
+# 日本語音声ファイルをトリガーに文字起こしをする Azure Functions Java アプリケーション
 
-##概要
+## 概要
 　Azure Blob ストレージの audio コンテナに音声ファイルを配置すると、それをトリガーとして起動する Azure Functions Java アプリケーション。音声ファイルを Cognitive Speech Service に渡し、 得られた日本語の音声テキストを text コンテナに配置します。
 
-###実行環境
+### 実行環境
 - Azure App Service Windows ベース環境
 - Zulu JDK11
 
-###開発環境
+### 開発環境
 - Visual Studio Code
 - JDK 11
 
