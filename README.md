@@ -2,38 +2,43 @@
 
 ## 概要
 　Azure Blob ストレージの audio コンテナに音声ファイルを配置すると、それをトリガーとして起動する Azure Functions Java アプリケーション。音声ファイルを Cognitive Speech Service に渡し、 得られた日本語の音声テキストを text コンテナに配置します。
+<img src="/images/workflow.png" title="workflow">
 
 ### 実行環境
 - Azure App Service Windows ベース環境
-- Zulu JDK11
+- Java 11
 
 ### 開発環境
 - Visual Studio Code
-- JDK 11
+- Zulu JDK11
+- Apache Maven
+
+## 開発環境の準備
 
 クイックスタート: Visual Studio Code を使用して Azure に Java 関数を作成する
 https://docs.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-java
 
+Windows 10 上に開発環境を準備する場合、システム環境変数もしくはユーザー環境変数への登録内容
 
-Zulu JDK11 インストール
+1. Zulu JDK11 のインストール
 
-%JAVA_HOME%
-C:\Program Files\Zulu\zulu-11
+%JAVA_HOME% = C:\Program Files\Zulu\zulu-11
+%PATH% へ %JAVA_HOME% を追加
 
-%PATH%
-%JAVA_HOME%
+2. Apache Maven の インストール
 
-Apache Maven インストール
-%PATH%
-C:\Program Files\apache-maven-3.6.3\bin
+%PATH% へ C:\Program Files\apache-maven-3.6.3\bin を追加
 
-Blob ストレージの依存関係 pom.xml
+3. ローカルデバッグ用の設定ファイル
 
-    <dependency>
-        <groupId>com.azure</groupId>
-        <artifactId>azure-storage-blob</artifactId>
-        <version>12.10.0</version>
-    </dependency>
-
-Speech SDK JAVA 開発環境を設定する
-https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/quickstarts/setup-platform?tabs=dotnet%2Cwindows%2Cjre%2Cbrowser&pivots=programming-language-java
+```json:local.settings.json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "<Azure Blob 接続文字列>",
+    "CognitiveServiceApiKey": "<Cognitive.SpeechService API キー>",
+    "FUNCTIONS_WORKER_RUNTIME": "java"
+  },
+  "ConnectionStrings": {}
+}
+```
