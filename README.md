@@ -3,7 +3,7 @@
 ## 概要
 　Azure Blob ストレージの audio コンテナに音声ファイルを配置すると、それをトリガーとして起動する Azure Functions Java アプリケーション。音声ファイルを Cognitive Speech Service に渡し、 得られた日本語の音声テキストを text コンテナに配置します。
 
-　<img src="/images/workflow.png" title="workflow">
+ <img src="/images/workflow.png" title="workflow">
 
 ### 実行環境
 - Azure App Service : Windows ベース環境
@@ -16,8 +16,7 @@
 
 ## 開発環境の準備
 
-クイックスタート: Visual Studio Code を使用して Azure に Java 関数を作成する
-https://docs.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-java
+[クイックスタート: Visual Studio Code を使用して Azure に Java 関数を作成する](https://docs.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-java)
 
 Windows 10 上に開発環境を準備する場合、システム環境変数もしくはユーザー環境変数への登録内容
 
