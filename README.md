@@ -1,7 +1,7 @@
 # 日本語音声ファイルから文字起こしをする Java アプリケーション
 
 ## 概要
-　Azure Blob ストレージの audio コンテナに音声ファイルを配置すると、それをトリガーとして起動する Azure Functions Java アプリケーション。音声ファイルを Cognitive Speech Service に渡し、 得られた日本語の音声テキストを text コンテナに配置します。
+　Azure Blob ストレージの audio コンテナに音声ファイルを配置すると、それをトリガーとして起動する Azure Functions Java アプリケーション。音声ファイルを Cognitive Speech サービスに渡し、 得られた日本語の音声テキストを text コンテナに保存します。
 
  <img src="/images/workflow.png" title="workflow">
 
@@ -11,10 +11,12 @@
 
 　デプロイ後に Azure Functions の構成メニュー、アプリケーション設定で環境変数として CognitiveServiceApiKey の登録が必要です
 
-### 開発環境
+### ローカル開発環境
 - Visual Studio Code
 - Zulu JDK11
 - Apache Maven
+
+　クラウド側に Azure 汎用ストレージ、Cognitive Speech サービスのデプロイが必要です。
 
 ## 開発環境の準備
 
