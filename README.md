@@ -22,13 +22,13 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 
 1. Zulu JDK11 のインストール
 
-%JAVA_HOME% = C:\Program Files\Zulu\zulu-11
+    %JAVA_HOME% = C:\Program Files\Zulu\zulu-11
 
-%PATH% へ %JAVA_HOME% を追加
+    %PATH% へ %JAVA_HOME% を追加
 
 2. Apache Maven の インストール
 
-%PATH% へ C:\Program Files\apache-maven-3.6.3\bin を追加
+    %PATH% へ C:\Program Files\apache-maven-3.6.3\bin を追加
 
 3. ローカルデバッグ用の設定ファイル
 ```json:local.settings.json
