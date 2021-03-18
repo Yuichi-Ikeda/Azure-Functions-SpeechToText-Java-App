@@ -34,7 +34,15 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 
 3. ローカルデバッグ用の設定ファイル
 
+```java:settings.java
+jjjjj
+```
+
 ```json:settings.json
+aaaaaa
+```
+
+```json:local.settings.json
 {
   "IsEncrypted": false,
   "Values": {
