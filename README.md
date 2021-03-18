@@ -6,8 +6,10 @@
  <img src="/images/workflow.png" title="workflow">
 
 ### 実行環境
-- Azure App Service : Windows ベース環境
+- Azure Functions : Windows ベース環境
 - Java 11
+
+※ ビルド、デプロイ後に Azure Functions の構成メニュー、アプリケーション設定で環境変数として CognitiveServiceApiKey の登録が必要です
 
 ### 開発環境
 - Visual Studio Code
@@ -16,7 +18,7 @@
 
 ## 開発環境の準備
 
-#### [クイックスタート: Visual Studio Code を使用して Azure に Java 関数を作成する](https://docs.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-java)
+### [クイックスタート: Visual Studio Code を使用して Azure に Java 関数を作成する](https://docs.microsoft.com/ja-jp/azure/azure-functions/create-first-function-vs-code-java)
 
 Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 
@@ -31,6 +33,7 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
     %PATH% へ C:\Program Files\apache-maven-3.6.3\bin を追加
 
 3. ローカルデバッグ用の設定ファイル
+
 ```json:local.settings.json
 {
   "IsEncrypted": false,
