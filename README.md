@@ -5,7 +5,7 @@
 
  <img src="/images/workflow.png" title="workflow">
 
-### 実行環境
+### クラウド実行環境
 - Azure Functions : Windows ベース環境
 - Java 11
 
@@ -48,11 +48,7 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 }
 ```
 
-## 参考資料
-
-### [音声ファイルの終わりまで継続的認識](https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/get-started-speech-to-text?tabs=windowsinstall&pivots=programming-language-java#%E7%B6%99%E7%B6%9A%E7%9A%84%E8%AA%8D%E8%AD%98)
-
-### Functions.java
+## Functions.java
 
 ```java:Functions.java
 package com.function;
@@ -199,3 +195,7 @@ public class Function
     }
 }
 ```
+
+## 参考資料
+
+### [音声ファイルの終わりまで継続的認識](https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/get-started-speech-to-text?tabs=windowsinstall&pivots=programming-language-java#%E7%B6%99%E7%B6%9A%E7%9A%84%E8%AA%8D%E8%AD%98)
