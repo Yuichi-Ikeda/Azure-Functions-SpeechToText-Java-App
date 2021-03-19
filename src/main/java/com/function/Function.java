@@ -48,43 +48,50 @@ public class Function
       blobClient.uploadFromFile(tempfile + ".txt", true);
 
       // 一時ファイルの削除
-      File file = new File(tempfile + ".txt");
-      file.delete();
+      File fileAudio = new File(tempfile + ".wav");
+      File fileText = new File(tempfile + ".txt");
+      fileAudio.delete();
+      fileText.delete();
     }
     
-    // イベント同期用
+    // イベント同期用セマフォ
     private Semaphore syncSemaphore;
     private OutputStreamWriter filewriter;
 
     /**
-     * SpeechService で audio ファイルから文字起こし
+     * Speech サービスで audio ファイルから文字起こし
      * https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/get-started-speech-to-text
      */
     private void audio2Text(String tempfile, ExecutionContext context) 
     {
-      // First initialize the semaphore.
-      syncSemaphore = new Semaphore(0);
-
+      // 結果出力用の一時ファイル
       try {
         filewriter = new OutputStreamWriter(new FileOutputStream(tempfile + ".txt"), "UTF-8");
-      }catch(IOException ioex){
+      }
+      catch(IOException ioex) {
         context.getLogger().warning(ioex.getMessage());
+        return;
       }
       
+      // Speech サービスへ接続
       String key = System.getenv("CognitiveServiceApiKey");
       SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
-
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
       
+      // イベント同期オブジェクトの初期化
+      syncSemaphore = new Semaphore(0);
+
+      // 部分文字列の抽出毎に繰り返し呼ばれる
       recognizer.recognized.addEventListener((s, e) -> {
           if (e.getResult().getReason() == ResultReason.RecognizedSpeech) {
               String transcript = e.getResult().getText();
               context.getLogger().info("RECOGNIZED: Text=" + transcript);
               try {
               filewriter.write(transcript);
-              }catch(IOException ioex){
+              }
+              catch(IOException ioex) {
                 context.getLogger().warning(ioex.getMessage());
               }
           }
@@ -93,6 +100,7 @@ public class Function
           }
       });
 
+      // 途中で処理が完了したら呼ばれる
       recognizer.canceled.addEventListener((s, e) -> {
           context.getLogger().info("CANCELED: Reason=" + e.getReason());
 
@@ -101,31 +109,28 @@ public class Function
               context.getLogger().warning("CANCELED: ErrorDetails=" + e.getErrorDetails());
               context.getLogger().warning("CANCELED: Did you update the subscription info?");
           }
-
           syncSemaphore.release();
       });
 
+      // 最後まで完了したら呼ばれる
       recognizer.sessionStopped.addEventListener((s, e) -> {
           context.getLogger().info("\n    Session stopped event.");
           try{
             filewriter.close();
-          }catch(IOException ioex){
+          }
+          catch(IOException ioex) {
             context.getLogger().warning(ioex.getMessage());
           }
           syncSemaphore.release();
           recognizer.close();
-
-          // 一時ファイルの削除
-          File file = new File(tempfile + ".wav");
-          file.delete();
       });
 
       try {
-        // Starts continuous recognition.
-        recognizer.startContinuousRecognitionAsync().get();
-        // Waits for completion.
+        // 文字起こしの開始
+        recognizer.startContinuousRecognitionAsync().get();        
+        // syncSemaphore がリリースされるまで、ここで待機
         syncSemaphore.acquire();
-        // Stops recognition.
+        // 文字起こしの停止
         recognizer.stopContinuousRecognitionAsync().get();
       }
       catch(ExecutionException e) {
