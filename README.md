@@ -195,3 +195,7 @@ public class Function
     }
 }
 ```
+
+## 参考資料
+
+### [音声ファイルの終わりまでの継続的認識](https://docs.microsoft.com/ja-jp/azure/cognitive-services/speech-service/get-started-speech-to-text?tabs=windowsinstall&pivots=programming-language-java#%E7%B6%99%E7%B6%9A%E7%9A%84%E8%AA%8D%E8%AD%98)
