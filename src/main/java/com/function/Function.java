@@ -11,6 +11,7 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+import java.net.*;
 import java.io.*;
 
 /**
@@ -24,14 +25,14 @@ public class Function
     */
     @FunctionName("audio2text")
     public void run(@BlobTrigger(name = "file", dataType = "binary", path = "audio/{name}.wav", 
-                    connection = "AzureWebJobsStorage") byte[] content,
+                    connection = "AudioStorage") byte[] content,
                     @BindingName("name") String filename, final ExecutionContext context) 
     {
       context.getLogger().info("Name: " + filename + " Size: " + content.length + " bytes");
 
       // 環境変数から値を取得
       String tempfile = System.getenv("TMP")+"\\" + filename;
-      String connectStr = System.getenv("AzureWebJobsStorage");
+      String connectStr = System.getenv("AudioStorage");
 
       // Step 1. Blob から audio ファイルをダウンロード
       BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(connectStr).buildClient();
@@ -68,14 +69,25 @@ public class Function
       try {
         filewriter = new OutputStreamWriter(new FileOutputStream(tempfile + ".txt"), "UTF-8");
       }
-      catch(IOException ioex) {
-        context.getLogger().warning(ioex.getMessage());
+      catch(IOException e) {
+        context.getLogger().warning(e.getMessage());
         return;
       }
       
       // Speech サービスへ接続
       String key = System.getenv("CognitiveServiceApiKey");
-      SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
+      String endPoint = System.getenv("CognitiveEndpoint");
+      URI uriEndpoint;
+      try{
+        uriEndpoint = new URI(endPoint);
+      }
+      catch(URISyntaxException e) {
+        context.getLogger().warning(e.getMessage());
+        return;
+      }
+
+      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+      //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);

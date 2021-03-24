@@ -24,7 +24,7 @@
 
 Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 
-1. Zulu JDK11 のインストール
+1. [Zulu JDK11 のインストール](https://www.azul.com/downloads/azure-only/zulu/?version=java-11-lts&os=windows&architecture=x86-64-bit&package=jdk)
 
     %JAVA_HOME% = C:\Program Files\Zulu\zulu-11
 
@@ -40,7 +40,9 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "<Azure Blob 接続文字列>",
+    "AzureWebJobsStorage": "<Azure Functions 既定の Azure Storage 接続文字列>",
+    "AudioStorage": "<音声ファイル格納用 Azure Storage 接続文字列>",
+    "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1?language=ja-JP",
     "CognitiveServiceApiKey": "<Cognitive.SpeechService API キー>",
     "FUNCTIONS_WORKER_RUNTIME": "java"
   },
@@ -64,6 +66,7 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+import java.net.*;
 import java.io.*;
 
 /**
@@ -77,14 +80,14 @@ public class Function
     */
     @FunctionName("audio2text")
     public void run(@BlobTrigger(name = "file", dataType = "binary", path = "audio/{name}.wav", 
-                    connection = "AzureWebJobsStorage") byte[] content,
+                    connection = "AudioStorage") byte[] content,
                     @BindingName("name") String filename, final ExecutionContext context) 
     {
       context.getLogger().info("Name: " + filename + " Size: " + content.length + " bytes");
 
       // 環境変数から値を取得
       String tempfile = System.getenv("TMP")+"\\" + filename;
-      String connectStr = System.getenv("AzureWebJobsStorage");
+      String connectStr = System.getenv("AudioStorage");
 
       // Step 1. Blob から audio ファイルをダウンロード
       BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(connectStr).buildClient();
@@ -121,14 +124,25 @@ public class Function
       try {
         filewriter = new OutputStreamWriter(new FileOutputStream(tempfile + ".txt"), "UTF-8");
       }
-      catch(IOException ioex) {
-        context.getLogger().warning(ioex.getMessage());
+      catch(IOException e) {
+        context.getLogger().warning(e.getMessage());
         return;
       }
       
       // Speech サービスへ接続
       String key = System.getenv("CognitiveServiceApiKey");
-      SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
+      String endPoint = System.getenv("CognitiveEndpoint");
+      URI uriEndpoint;
+      try{
+        uriEndpoint = new URI(endPoint);
+      }
+      catch(URISyntaxException e) {
+        context.getLogger().warning(e.getMessage());
+        return;
+      }
+
+      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+      //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
