@@ -42,7 +42,7 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
   "Values": {
     "AzureWebJobsStorage": "<Azure Functions 既定の Azure Storage 接続文字列>",
     "AudioStorage": "<音声ファイル格納用 Azure Storage 接続文字列>",
-    "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1?language=ja-JP",
+    "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1",
     "CognitiveServiceApiKey": "<Cognitive.SpeechService API キー>",
     "FUNCTIONS_WORKER_RUNTIME": "java"
   },
@@ -143,7 +143,6 @@ public class Function
       }
 
       SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
-      //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
