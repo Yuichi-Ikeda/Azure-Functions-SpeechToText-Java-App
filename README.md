@@ -26,13 +26,13 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
 
 1. [Zulu JDK11 のインストール](https://www.azul.com/downloads/azure-only/zulu/?version=java-11-lts&os=windows&architecture=x86-64-bit&package=jdk)
 
-    %JAVA_HOME% = C:\Program Files\Zulu\zulu-11
+    JAVA_HOME に C:\Program Files\Zulu\zulu-11
 
-    %PATH% へ %JAVA_HOME% を追加
+    PATH へ %JAVA_HOME% を追加
 
 2. Apache Maven の インストール
 
-    %PATH% へ C:\Program Files\apache-maven-3.6.3\bin を追加
+    PATH へ C:\Program Files\apache-maven-3.6.3\bin を追加
 
 3. ローカルデバッグ用の local.settings.json ファイル
 
@@ -43,13 +43,17 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
     "AzureWebJobsStorage": "<Azure Functions 既定の Azure Storage 接続文字列>",
     "AudioStorage": "<音声ファイル格納用 Azure Storage 接続文字列>",
     "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1",
+<<<<<<< HEAD
     "CognitiveEndpointId": "<カスタムスピーチ用のエンドポイント ID>",
+=======
+>>>>>>> 7d1cf70a1d5a29b41badf2b5a617ebaa5c347b2d
     "CognitiveServiceApiKey": "<Cognitive.SpeechService API キー>",
     "FUNCTIONS_WORKER_RUNTIME": "java"
   },
   "ConnectionStrings": {}
 }
 ```
+※ 上記例で CognitiveEndpoint の wss で始まる個別名は Speech Service のネットワークでカスタムドメイン名を付けてプライベートエンドポイント経由でアクセスする際の例となっています。通常のエンドポイントは　Azure ポータルに記載されている https://リージョン で始まるエンドポイントを指定します。
 
 ## Functions.java
 
@@ -149,6 +153,7 @@ public class Function
         return;
       }
 
+<<<<<<< HEAD
       // 標準ドメインを利用の場合はこちら
       //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
 
@@ -156,6 +161,9 @@ public class Function
       SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
       // endPointId は、カスタムスピーチ利用の場合のみ指定
       speechConfig.setEndpointId(endPointId);
+=======
+      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+>>>>>>> 7d1cf70a1d5a29b41badf2b5a617ebaa5c347b2d
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
