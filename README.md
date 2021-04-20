@@ -42,18 +42,15 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
   "Values": {
     "AzureWebJobsStorage": "<Azure Functions 既定の Azure Storage 接続文字列>",
     "AudioStorage": "<音声ファイル格納用 Azure Storage 接続文字列>",
-    "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1",
-<<<<<<< HEAD
-    "CognitiveEndpointId": "<カスタムスピーチ用のエンドポイント ID>",
-=======
->>>>>>> 7d1cf70a1d5a29b41badf2b5a617ebaa5c347b2d
+    "CognitiveEndpoint": "wss://<カスタムドメイン名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1", 
+    "CognitiveEndpointId": "<カスタムスピーチのエンドポイントID>",
     "CognitiveServiceApiKey": "<Cognitive.SpeechService API キー>",
     "FUNCTIONS_WORKER_RUNTIME": "java"
   },
   "ConnectionStrings": {}
 }
 ```
-※ 上記例で CognitiveEndpoint の wss で始まる個別名は Speech Service のネットワークでカスタムドメイン名を付けてプライベートエンドポイント経由でアクセスする際の例となっています。通常のエンドポイントは　Azure ポータルに記載されている https://リージョン で始まるエンドポイントを指定します。
+※ 上記例で CognitiveEndpoint の wss で始まる個別名は Speech Service のネットワークでカスタムドメイン名を付けて VNET からプライベートエンドポイント経由でアクセスする際の例となっています。また CognitiveEndpointId はカスタムスピーチで独自の学習モデルを公開した際のエンドポイントID を指定します。
 
 ## Functions.java
 
