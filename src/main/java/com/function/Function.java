@@ -77,17 +77,29 @@ public class Function
       // Speech サービスへ接続
       String key = System.getenv("CognitiveServiceApiKey");
       String endPoint = System.getenv("CognitiveEndpoint");
+      String endPointId = System.getenv("CognitiveEndpointId");
       URI uriEndpoint;
       try{
         uriEndpoint = new URI(endPoint);
       }
       catch(URISyntaxException e) {
         context.getLogger().warning(e.getMessage());
+        try{
+          filewriter.close();
+        }
+        catch(IOException ioex) {
+          context.getLogger().warning(ioex.getMessage());
+        }
         return;
       }
 
-      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+      // 標準ドメインを利用の場合はこちら
       //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
+
+      // カスタムドメインを利用した場合のエンドポイント指定
+      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+      // endPointId は、カスタムスピーチ利用の場合のみ指定
+      speechConfig.setEndpointId(endPointId);
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);

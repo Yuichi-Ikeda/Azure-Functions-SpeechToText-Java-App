@@ -9,7 +9,7 @@
 - Azure Functions : Windows ベース環境
 - Java 11
 
-　デプロイ後に Azure Functions の構成メニュー、アプリケーション設定で環境変数として CognitiveServiceApiKey の登録が必要です
+　デプロイ後に Azure Functions の構成メニュー、アプリケーション設定で環境変数として local.settings.json の値を登録する必要があります。
 
 ### ローカル開発環境
 - Visual Studio Code
@@ -42,7 +42,8 @@ Windows 10 上に開発環境を準備する場合、環境変数の登録内容
   "Values": {
     "AzureWebJobsStorage": "<Azure Functions 既定の Azure Storage 接続文字列>",
     "AudioStorage": "<音声ファイル格納用 Azure Storage 接続文字列>",
-    "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1?language=ja-JP",
+    "CognitiveEndpoint": "wss://<個別名>.cognitiveservices.azure.com/stt/speech/recognition/conversation/cognitiveservices/v1",
+    "CognitiveEndpointId": "<カスタムスピーチ用のエンドポイント ID>",
     "CognitiveServiceApiKey": "<Cognitive.SpeechService API キー>",
     "FUNCTIONS_WORKER_RUNTIME": "java"
   },
@@ -132,17 +133,29 @@ public class Function
       // Speech サービスへ接続
       String key = System.getenv("CognitiveServiceApiKey");
       String endPoint = System.getenv("CognitiveEndpoint");
+      String endPointId = System.getenv("CognitiveEndpointId");
       URI uriEndpoint;
       try{
         uriEndpoint = new URI(endPoint);
       }
       catch(URISyntaxException e) {
         context.getLogger().warning(e.getMessage());
+        try{
+          filewriter.close();
+        }
+        catch(IOException ioex) {
+          context.getLogger().warning(ioex.getMessage());
+        }
         return;
       }
 
-      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+      // 標準ドメインを利用の場合はこちら
       //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
+
+      // カスタムドメインを利用した場合のエンドポイント指定
+      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
+      // endPointId は、カスタムスピーチ利用の場合のみ指定
+      speechConfig.setEndpointId(endPointId);
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
