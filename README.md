@@ -150,7 +150,6 @@ public class Function
         return;
       }
 
-<<<<<<< HEAD
       // 標準ドメインを利用の場合はこちら
       //SpeechConfig speechConfig = SpeechConfig.fromSubscription(key, "japaneast");
 
@@ -158,9 +157,6 @@ public class Function
       SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
       // endPointId は、カスタムスピーチ利用の場合のみ指定
       speechConfig.setEndpointId(endPointId);
-=======
-      SpeechConfig speechConfig = SpeechConfig.fromEndpoint(uriEndpoint, key);
->>>>>>> 7d1cf70a1d5a29b41badf2b5a617ebaa5c347b2d
       speechConfig.setSpeechRecognitionLanguage("ja-JP");
       AudioConfig audioConfig = AudioConfig.fromWavFileInput(tempfile + ".wav");
       SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
